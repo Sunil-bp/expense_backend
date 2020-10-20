@@ -1,0 +1,4 @@
+1. how to log user logging in and pages that are being access :: in generalsense get idea on traffic :: 
+
+2. use of secrate key :: 
+

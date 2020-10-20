@@ -1,0 +1,39 @@
+
+1. Check version : 
+		python -m django --version
+		3.0.4
+
+2. Create project : 
+		django-admin startproject expense_backend
+		
+		
+3. Add readme file  
+		touch readme.md
+		git add readme.md
+		git commit -m "First commit " 
+		
+4. Move to develop branch 
+		git checkout -b develop
+
+5. Add git ignore file 
+
+6. Add my_notes.txt file and add it to git ignore : 
+		commit the git ignore 
+		
+7. Deal with secrate key : 
+		store in os.env
+		source : https://able.bio/rhett/how-to-set-and-get-environment-variables-in-python--274rgt5#:~:text=Storing%20local%20env%20variables,-You%20should%20write&text=First%20install%20Python%20Decouple%20into%20your%20local%20Python%20environment.&text=Once%20installed%2C%20create%20a%20.,to%20add%20your%20environment%20variables.&text=Then%20save%20(WriteOut)%20the%20file%20and%20exit%20nano.
+		
+		
+8. Adding more file to gitignore 
+		few standard pratice and a refrence link : 
+		https://djangowaves.com/tips-tricks/gitignore-for-a-django-project/
+		
+		
+9. Add all py files that are necessary  with 
+		git add  . 
+		
+		
+10. add origin remote and push -u 
+
+11. Clear all other files  
