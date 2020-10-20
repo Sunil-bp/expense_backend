@@ -1,2 +1,4 @@
 my_notes.txt
 .env
+.idea/
+db.sqlite3
