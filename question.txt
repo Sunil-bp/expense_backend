@@ -2,3 +2,35 @@
 
 2. use of secrate key :: 
 
+3. understanding setting file ::: https://docs.djangoproject.com/en/3.1/ref/settings/ 
+
+4. why refresher token ::It’s a security feature and also it’s because the JWT holds a little bit more information. If you look closely the example I gave above, you will see the token is composed by three parts: https://simpleisbetterthancomplex.com/tutorial/2018/12/19/how-to-use-jwt-authentication-with-django-rest-framework.html
+
+
+5. Create user cration end point : 
+	password is not displayed and only write only takn from post  
+
+6. How to restrict certain methods in generic views  
+			generics.ListCreateAPIView prevent get  ::: 
+			1. Use a vrsion below it  
+				
+				# class Usercreate(mixins.CreateModelMixin,
+				#                   generics.GenericAPIView):
+				#     queryset = User.objects.all()
+				#     serializer_class = UserSerializer
+				#
+				#     def post(self, request, *args, **kwargs):
+				#         return self.create(request, *args, **kwargs)
+				
+			2. overide get method and give your response back 
+				 def get(self, request):
+					response = {'message': 'Create function is not offered in this path.'}
+					return Response(response, status=HTTP_403_FORBIDDEN)
+					
+			3. dont allow other methods
+				 def _allowed_methods(self):
+					return [ 'POST', 'HEAD', 'OPTIONS']
+					
+			https://stackoverflow.com/questions/23639113/disable-a-method-in-a-viewset-django-rest-framework
+
+
