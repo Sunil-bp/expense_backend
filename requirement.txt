@@ -2,3 +2,4 @@ django
 python-decouple
 djangorestframework
 djangorestframework-jwt
+django-rest-passwordreset
