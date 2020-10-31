@@ -8,6 +8,7 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 
 )
+from django.http import HttpResponse
 
 from django.contrib.auth.models import User
 from users.serializers import UserSerializer, ChangePasswordSerializer
@@ -20,6 +21,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FO
 from rest_framework import mixins
 from rest_framework import generics
 
+#send email
+from django.core.mail import send_mail
 
 ## Can be uswed to list users  ( but can be harmfull to list all users  )
 ## Since this mixes list an create  .. go one step back
@@ -80,3 +83,14 @@ class ChangePasswordView(generics.UpdateAPIView):
 #
 #     def post(self, request, *args, **kwargs):
 #         return self.create(request, *args, **kwargs)
+
+def sending_mail(request):
+    print("Sending mail ")
+    send_mail(
+        'Subject here',
+        'Here is the message.',
+        'expense.vue@gmail.com',
+        ['sunilbpoojari@gmail.com'],
+        fail_silently=False,
+    )
+    return HttpResponse("HI sunil ")
