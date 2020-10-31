@@ -4,7 +4,7 @@ from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-
+from PIL import Image
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
@@ -29,13 +29,15 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         verbose_name="related place",
     )
-    photo = models.FileField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
-    place = models.CharField(max_length=30)
+    photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
+    place = models.CharField(max_length=30,default="karnataka")
 
     def __str__(self):
         return self.user.username
 
     def save(self, *args, **kwargs):
-        print("CHanging photo dimension ")
         super().save(*args, **kwargs)  # Call the "real" save() method.
-        print("Changed photo dimension ")
+        img_path = self.photo.path
+        foo = Image.open(img_path)
+        foo = foo.resize((160, 300), Image.ANTIALIAS)
+        foo.save(img_path, quality=95)
