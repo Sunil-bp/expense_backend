@@ -4,3 +4,4 @@ djangorestframework
 djangorestframework-jwt
 django-rest-passwordreset
 pillow
+django-adminlte-3

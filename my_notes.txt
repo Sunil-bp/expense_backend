@@ -81,3 +81,42 @@
 		login to admin page using :: host/admin 
 		
 		
+17 : Missed data on passowrd reset, password recovery , email config  , jwt setup , new profile  model ,signals  
+		signals  : https://docs.djangoproject.com/en/3.1/topics/signals/
+		
+		
+18  Fat Models : 
+		here we are defining methods in the model 
+		You should write fat models, skinny views.
+
+		Break logic into small methods on your models. This allows you use it multiple times from multiple sources (admin interface UI, front-end UI, API endpoints, multiple views) in a few lines of code instead of copy-pasting tons of code. So next time you’re sending a user an email, extend the model with an email function instead of writing this logic in your controller.
+
+		This also makes your code easier to unit test because you can test the email logic in one place, rather than repeatedly in every controller where this takes place.
+		
+		https://www.reddit.com/r/django/comments/hqbu4z/how_to_write_fat_models_and_skinny_views/
+		
+		 If you have two views(template and api) and code repeats - put either in model or utils.
+		 
+		 
+		One good way to do that from the beginning is to ask yourself:
+
+		How will I write a unit test for this?
+
+		How can I run this without an HTTP request? ex. through the Django shell
+
+		Is this part of my view something that could be reusable somewhere else? Ex. reactivating a user
+
+		How can I do this without depending on the request object?
+
+		Your views should have the least possible responsibilities, which normally means they should only do stuff like authentication, validating user input (using forms or DRF serializers) and calling the business logic that's written somewhere else.
+		
+		My view logic is normally like this: check args/kwargs or request data, pass said info to some function or model method, check the result, if success, return success response, if not, return error response. This pattern accounts for most views I write. My views are always as short as possible and contain almost no logic aside from what error to return on failure.
+		
+		
+		
+19  side track .. learning mistakes  ::: https://www.toptal.com/django/django-top-10-mistakes
+		
+20 pillow overidding model to save images with reduced size 
+
+21 exploring  django-adminlte-3		
+		

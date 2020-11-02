@@ -27,8 +27,9 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
-        verbose_name="related place",
+        verbose_name="User name",
     )
+    avialble = models.BooleanField(default = False)
     photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
     place = models.CharField(max_length=30,default="karnataka")
 
