@@ -21,6 +21,17 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         [reset_password_token.user.email]
     )
 
+#new manger
+class ProfileManager(models.Manager):
+    def with_counts(self):
+        result_list = self.filter(user__username__contains="sunil")
+        return result_list
+    def with_counts_test(self):
+        result_list = self.filter(user__username__contains="te")
+        return result_list
+
+
+
 
 ##new model for profile
 class Profile(models.Model):
@@ -32,6 +43,7 @@ class Profile(models.Model):
     avialble = models.BooleanField(default = False)
     photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
     place = models.CharField(max_length=30,default="karnataka")
+    objects = ProfileManager()
 
     def __str__(self):
         return self.user.username
@@ -42,3 +54,4 @@ class Profile(models.Model):
         foo = Image.open(img_path)
         foo = foo.resize((160, 300), Image.ANTIALIAS)
         foo.save(img_path, quality=95)
+

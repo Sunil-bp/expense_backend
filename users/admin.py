@@ -9,4 +9,6 @@ class ProfileAdmin(admin.ModelAdmin):
     list_display = ['user', 'avialble']
     ordering = ['user']
     actions = [make_aviable]
+
+
 admin.site.register(Profile,ProfileAdmin)

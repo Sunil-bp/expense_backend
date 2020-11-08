@@ -89,6 +89,10 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 def sending_mail(request):
     print("Sending mail ")
+
+    #testing manager
+    print()
+
     send_mail(
         'Subject here',
         'Here is the message.',
@@ -100,7 +104,7 @@ def sending_mail(request):
 
 
 
-class Userlist(generics.ListAPIView):
-    queryset = Profile.objects.all()
+class Profilelist(generics.ListAPIView):
+    queryset = Profile.objects.with_counts_test()
     serializer_class = ProfileList
     permission_classes = [IsAdminUser]

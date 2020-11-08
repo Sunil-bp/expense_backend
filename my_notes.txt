@@ -132,7 +132,10 @@
 		the idea of fatty models and keeping view clean 
 		start with new viiew for profile accessable from admin only  .. great ! 
 		now create a new manager in profile  ... showing only certain model 
-	
+		
+		Adding username  as finl which is nested 
+		username = serializers.CharField(read_only=True, source="user.username")
+		
 	
 
 		
