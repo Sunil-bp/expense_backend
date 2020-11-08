@@ -105,6 +105,6 @@ def sending_mail(request):
 
 
 class Profilelist(generics.ListAPIView):
-    queryset = Profile.objects.with_counts_test()
+    queryset = Profile.objects.all()
     serializer_class = ProfileList
     permission_classes = [IsAdminUser]

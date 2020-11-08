@@ -136,7 +136,35 @@
 		Adding username  as finl which is nested 
 		username = serializers.CharField(read_only=True, source="user.username")
 		
+25  understanding query set  :: 
+	https://docs.djangoproject.com/en/3.1/ref/models/querysets/
 	
+	get full views  
+	# This list contains a Blog object.
+	>>> Blog.objects.filter(name__startswith='Beatles')
+	<QuerySet [<Blog: Beatles Blog>]>
+
+	# This list contains a dictionary.
+	>>> Blog.objects.filter(name__startswith='Beatles').values()
+	<QuerySet [{'id': 1, 'name': 'Beatles Blog', 'tagline': 'All the latest Beatles news.'}]>
+		
+	bulk create  
+	Entry.objects.bulk_create([
+	...     Entry(headline='This is a test'),
+	...     Entry(headline='This is only a test'),
+	... ])
+	
+	union 
+	qs1 = Author.objects.values_list('name')
+	qs2 = Entry.objects.values_list('headline')
+	qs1.union(qs2).order_by('name')
+	
+	
+	ovrrridding our objects.all() 
+	def get_queryset(self):
+	result_list = super().get_queryset()
+	new_data = result_list.filter(user__username__contains="su")
+	return new_data
 
 		
 		
