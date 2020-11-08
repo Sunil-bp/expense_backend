@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from .models import Profile
+
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
@@ -11,7 +13,7 @@ from rest_framework.permissions import (
 from django.http import HttpResponse
 
 from django.contrib.auth.models import User
-from users.serializers import UserSerializer, ChangePasswordSerializer
+from users.serializers import UserSerializer, ChangePasswordSerializer , ProfileList
 
 ##auth jwt
 from rest_framework.response import Response
@@ -80,6 +82,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 #                   generics.GenericAPIView):
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer
+
 #
 #     def post(self, request, *args, **kwargs):
 #         return self.create(request, *args, **kwargs)
@@ -94,3 +97,10 @@ def sending_mail(request):
         fail_silently=False,
     )
     return HttpResponse("HI sunil ")
+
+
+
+class Userlist(generics.ListAPIView):
+    queryset = Profile.objects.all()
+    serializer_class = ProfileList
+    permission_classes = [IsAdminUser]

@@ -118,5 +118,22 @@
 		
 20 pillow overidding model to save images with reduced size 
 
-21 exploring  django-adminlte-3		
+21 exploring  django-adminlte-3
+
+22  editing django admin py  :: 
+	docs.djangoproject.com/en/3.1/ref/contrib/admin/actions/
+	
+23 login to app !  session based  
+		from django.contrib.auth import views as auth_views >> use this  
+		path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+		just define how you want the login front end page  and voila yu are authenticated  
+		
+24 	managers  in models : 
+		the idea of fatty models and keeping view clean 
+		start with new viiew for profile accessable from admin only  .. great ! 
+		now create a new manager in profile  ... showing only certain model 
+	
+	
+
+		
 		

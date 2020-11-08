@@ -32,8 +32,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
-    'adminlte3',
-    'adminlte3_theme',
+    # 'adminlte3',
+    # 'adminlte3_theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'rest_framework',
@@ -124,6 +124,12 @@ STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+LOGIN_REDIRECT_URL = 'user-list'
+LOGIN_URL = 'login'
+# LOGOUT_REDIRECT_URL = 'user-list'
+# LOGOUT_URL = 'login'
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
