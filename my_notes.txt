@@ -168,3 +168,7 @@
 
 		
 		
+26 Performing raw SQL queries
+	for p in Person.objects.raw('SELECT * FROM myapp_person'):
+	...     print(p)
+	

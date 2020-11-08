@@ -21,18 +21,16 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
         [reset_password_token.user.email]
     )
 
-
 #new manger
 class ProfileManager(models.Manager):
-    def get_queryset(self):
-        result_list = super().get_queryset()
-        new_data = result_list.filter(user__username__contains="su")
-        return new_data
-
-
+    def with_counts(self):
+        result_list = self.filter(user__username__contains="sunil")
+        return result_list
     def with_counts_test(self):
         result_list = self.filter(user__username__contains="te")
         return result_list
+
+
 
 
 ##new model for profile
@@ -42,9 +40,12 @@ class Profile(models.Model):
         on_delete=models.CASCADE,
         verbose_name="User name",
     )
+
     avialble = models.BooleanField(default = False)
     photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
     place = models.CharField(max_length=30,default="karnataka")
+
+
     objects = ProfileManager()
 
     def __str__(self):
