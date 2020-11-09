@@ -5,6 +5,8 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
 from PIL import Image
+
+
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
 
@@ -44,7 +46,6 @@ class Profile(models.Model):
     avialble = models.BooleanField(default = False)
     photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
     place = models.CharField(max_length=30,default="karnataka")
-
 
     objects = ProfileManager()
 

@@ -25,6 +25,7 @@ urlpatterns = [
     path('token-auth/', obtain_jwt_token),
     path('api-token-refresh/', refresh_jwt_token),
     path("api/manage/", include('users.urls')),
+    path("api/", include('expense.urls')),
 
 ]
 

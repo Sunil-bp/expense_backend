@@ -165,10 +165,29 @@
 	result_list = super().get_queryset()
 	new_data = result_list.filter(user__username__contains="su")
 	return new_data
-
+	
+	
+	USER MODEL 
+	https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
 		
 		
 26 Performing raw SQL queries
 	for p in Person.objects.raw('SELECT * FROM myapp_person'):
 	...     print(p)
+	
+27 flush all datta 
+	python manage.py flush 
+	
+28 setting new app and making all model and serialisers  
+	bank    
+		accessing user from the request 
+		
+	credit card 
+		simialr to bank but has a limit field which has be made zero every time 
+
+	cate,sub ,acccate , account_sub 
+	added signal to auto add 
+	added admin page for pre existing users  
+	
+
 	

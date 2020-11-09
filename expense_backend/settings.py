@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
+    'expense.apps.ExpenseConfig',
     # 'adminlte3',
     # 'adminlte3_theme',
     'django.contrib.admin',

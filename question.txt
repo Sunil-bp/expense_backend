@@ -32,5 +32,18 @@
 					return [ 'POST', 'HEAD', 'OPTIONS']
 					
 			https://stackoverflow.com/questions/23639113/disable-a-method-in-a-viewset-django-rest-framework
+			
+			
+			
+7 understand  get_absolute_url()  related to models  !! 
+
+
+
+8 exclude my fields 
+		https://stackoverflow.com/questions/38366605/exclude-a-field-from-django-rest-framework-serializer
+		
+
+9 signal running twice  
+	he problem was that the post_save signal was getting called when the object was created as well as saved. I have no idea why so I added a workaround which now works
 
 
