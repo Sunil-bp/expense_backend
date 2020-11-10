@@ -1,5 +1,5 @@
 from django.contrib import admin
-from expense.models import Bank, CreditCard, Subcategory, Category, AccountCategory, AccountSubcategory, ExpenseRecord
+from expense.models import Bank, CreditCard, Subcategory, Category, AccountCategory, AccountSubcategory, ExpenseRecord,ExpenseTransfer
 
 
 class BankAdmin(admin.ModelAdmin):
@@ -24,6 +24,9 @@ class AccountCategoryAdmin(admin.ModelAdmin):
 class ExpenseRecordAdmin(admin.ModelAdmin):
     list_display = ['user', 'account','type','amount','category','sub_category']
 
+class ExpenseTransferAdmin(admin.ModelAdmin):
+    list_display = ['user', 'create_on','amount','from_account','to_account']
+
 
 admin.site.register(Bank, BankAdmin)
 admin.site.register(CreditCard, CreditCardAdmin)
@@ -32,4 +35,5 @@ admin.site.register(Category, CategoryAdmin)
 admin.site.register(AccountCategory, AccountCategoryAdmin)
 admin.site.register(AccountSubcategory)
 admin.site.register(ExpenseRecord,ExpenseRecordAdmin)
+admin.site.register(ExpenseTransfer,ExpenseTransferAdmin)
 

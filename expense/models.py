@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from users.models import Profile
 from django.utils import timezone
 import datetime
-
+from django.db import IntegrityError
 
 # Create your models here.
 
@@ -38,13 +38,15 @@ class Bank(models.Model):
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
     ## problem with two sbi account
-    def save(self, *args, **kwargs):
-        old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
-        if old_data>0:
-            print(f"Already data exists  {old_data}")
-            return
-        # self.bank_name += "-" + self.user.username
-        super().save(*args, **kwargs)  # Call the "real" save() method.
+    ##o this has to be done in view or the model set as unique
+    # def save(self, *args, **kwargs):
+    #     old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
+    #     if old_data>0:
+    #         print(f"Already data exists  {old_data}")
+    #         # raise IntegrityError
+    #         return "data already there "
+    #     # self.bank_name += "-" + self.user.username
+    #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
 
 class CreditCard(models.Model):

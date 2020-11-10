@@ -37,16 +37,15 @@ def update_user_set_up(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=ExpenseRecord)
 def add_expense(sender, instance, **kwargs):
-    print(f"signal foor expense record  ")
-    ar = ExpenseRecord.objects.get(pk = instance.pk)
+    print(f"signal for expense record  {instance}")
     ac = Bank.objects.get(user=instance.user, bank_name=instance.account.bank_name)
-
-    amount  = 0
-    if ar:
+    if instance.pk:
+        print(f"modifying old data  {instance} ")
+        ar = ExpenseRecord.objects.get(pk = instance.pk)
         if instance.type == "income":
-            ac.balance += (instance.amount -amount )
+            ac.balance += (instance.amount -ar.amount )
         else:
-            ac.balance -= ( instance.amount - amount) 
+            ac.balance -= ( instance.amount - ar.amount)
     else:
         if instance.type == "income":
             ac.balance +=  instance.amount
@@ -68,10 +67,10 @@ def expense_transfer(sender, instance, **kwargs):
 
 @receiver(post_delete, sender=ExpenseRecord)
 def expense_deleted(sender, instance, **kwargs):
-
     ##if bank is not existing  then just delete
+    print(f" signal to delete data {instance}")
     if not instance.account:
-        print("Bank doesn't exists  exists ")
+        print(f"Bank doesn't exists for expense {instance}")
         return
     ac = Bank.objects.get(user=instance.user, bank_name=instance.account.bank_name)
     if instance.type == "income":

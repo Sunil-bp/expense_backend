@@ -189,7 +189,8 @@
 	added signal to auto add 
 	added admin page for pre existing users
 
-29 	
+29 	adding the expense trigers signal to chenge bank data  
+
 	
 
 	
