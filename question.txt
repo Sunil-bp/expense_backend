@@ -46,4 +46,5 @@
 9 signal running twice  
 	he problem was that the post_save signal was getting called when the object was created as well as saved. I have no idea why so I added a workaround which now works
 
-
+10 if model data is not created  
+	

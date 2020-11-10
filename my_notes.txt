@@ -187,7 +187,9 @@
 
 	cate,sub ,acccate , account_sub 
 	added signal to auto add 
-	added admin page for pre existing users  
+	added admin page for pre existing users
+
+29 	
 	
 
 	
