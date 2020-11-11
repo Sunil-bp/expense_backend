@@ -32,12 +32,11 @@ class ProfileManager(models.Manager):
         result_list = self.filter(user__username__contains="te")
         return result_list
 
-    def images(self,user_name):
+    def get_images(self,user_name):
         print(f" in method to get image url for {user_name}")
         result_list = self.get( user__pk = user_name.pk)
-        return result_list.photo.url
-
-
+        print(result_list.photo.url)
+        return [result_list]
 
 
 ##new model for profile

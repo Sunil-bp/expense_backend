@@ -18,7 +18,6 @@ class ProfileList(serializers.ModelSerializer):
 
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
-
     """
     Serializer for password change endpoint.
     """

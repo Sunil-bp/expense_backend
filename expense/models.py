@@ -48,6 +48,18 @@ class Bank(models.Model):
     #     # self.bank_name += "-" + self.user.username
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
+    # ok so save.super  but check for first time
+    def save(self, *args, **kwargs):
+        if self.id == None:
+            old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
+            if old_data>0:
+                print(f"Already data exists  {old_data}")
+                # raise IntegrityError
+                return "data already there "
+
+        # self.bank_name += "-" + self.user.username
+        super().save(*args, **kwargs)  # Call the "real" save() method.
+
 
 class CreditCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

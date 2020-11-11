@@ -38,6 +38,7 @@ class BankDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
 class CreditCardList(generics.ListCreateAPIView):
+    print("Getting credit  card ")
     def get_queryset(self):
         return CreditCard.objects.filter(user=self.request.user)
     queryset = CreditCard.objects.all()
@@ -51,10 +52,13 @@ class CreditCardDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CreditCardSerializer
     permission_classes = [IsAuthenticated]
 
-class ProfileImage(generics.ListCreateAPIView):
+class ProfileImage(generics.ListAPIView):
     def get_queryset(self):
-        print(" in querry set  ")
-        return Profile.objects.images(user_name = self.request.user)
+        print(f" in querry set  {self} ")
+        i = Profile.objects.get_images(user_name = self.request.user)
+        print(i)
+        return i
+    # queryset = Profile.objects.all()
     serializer_class = ProfileList
     # authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]

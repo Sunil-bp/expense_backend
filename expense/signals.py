@@ -54,13 +54,37 @@ def add_expense(sender, instance, **kwargs):
     ac.save()
 
 
-@receiver(post_save, sender=ExpenseTransfer)
+@receiver(pre_save, sender=ExpenseTransfer)
 def expense_transfer(sender, instance, **kwargs):
+    acf = Bank.objects.get(user=instance.user, bank_name=instance.from_account.bank_name)
+    act = Bank.objects.get(user=instance.user, bank_name=instance.to_account.bank_name)
+    print(f"in signal to sav transfer  ")
+    print(instance.pk)
+    if instance.pk:
+        print(f"modifying old data  {instance} ")
+        ar = ExpenseTransfer.objects.get(pk=instance.pk)
+        acf.balance -= (instance.amount - ar.amount)
+        act.balance += (instance.amount - ar.amount)
+    else:
+        acf.balance -= instance.amount
+        act.balance += instance.amount
+    act.save()
+    acf.save()
+
+
+@receiver(post_delete, sender=ExpenseTransfer)
+def expense_transfer_deleted(sender, instance, **kwargs):
+    ##if bank is not existing  then just delete
+    print(f" signal to delete tansfer data {instance}")
+    print(instance.from_account, instance.to_account)
+    if not instance.from_account or not instance.to_account:
+        print(f"Bank doesn't exists for expense {instance}")
+        return
     ac = Bank.objects.get(user=instance.user, bank_name=instance.from_account.bank_name)
-    ac.balance -= instance.amount
+    ac.balance += instance.amount
     ac.save()
     ac = Bank.objects.get(user=instance.user, bank_name=instance.to_account.bank_name)
-    ac.balance += instance.amount
+    ac.balance -= instance.amount
     ac.save()
 
 
