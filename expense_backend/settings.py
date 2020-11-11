@@ -31,7 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'django_filters',
     'users.apps.UsersConfig',
+    'expense.apps.ExpenseConfig',
+    # 'adminlte3',
+    # 'adminlte3_theme',
     'django.contrib.admin',
     'django.contrib.auth',
     'rest_framework',
@@ -123,6 +127,12 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+LOGIN_REDIRECT_URL = 'user-list'
+LOGIN_URL = 'login'
+# LOGOUT_REDIRECT_URL = 'user-list'
+# LOGOUT_URL = 'login'
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         # 'rest_framework.permissions.IsAuthenticated',
@@ -145,4 +155,3 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = config('username-email')
 EMAIL_HOST_PASSWORD = config('password')
-

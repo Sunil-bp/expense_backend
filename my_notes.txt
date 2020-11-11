@@ -81,3 +81,118 @@
 		login to admin page using :: host/admin 
 		
 		
+17 : Missed data on passowrd reset, password recovery , email config  , jwt setup , new profile  model ,signals  
+		signals  : https://docs.djangoproject.com/en/3.1/topics/signals/
+		
+		
+18  Fat Models : 
+		here we are defining methods in the model 
+		You should write fat models, skinny views.
+
+		Break logic into small methods on your models. This allows you use it multiple times from multiple sources (admin interface UI, front-end UI, API endpoints, multiple views) in a few lines of code instead of copy-pasting tons of code. So next time you’re sending a user an email, extend the model with an email function instead of writing this logic in your controller.
+
+		This also makes your code easier to unit test because you can test the email logic in one place, rather than repeatedly in every controller where this takes place.
+		
+		https://www.reddit.com/r/django/comments/hqbu4z/how_to_write_fat_models_and_skinny_views/
+		
+		 If you have two views(template and api) and code repeats - put either in model or utils.
+		 
+		 
+		One good way to do that from the beginning is to ask yourself:
+
+		How will I write a unit test for this?
+
+		How can I run this without an HTTP request? ex. through the Django shell
+
+		Is this part of my view something that could be reusable somewhere else? Ex. reactivating a user
+
+		How can I do this without depending on the request object?
+
+		Your views should have the least possible responsibilities, which normally means they should only do stuff like authentication, validating user input (using forms or DRF serializers) and calling the business logic that's written somewhere else.
+		
+		My view logic is normally like this: check args/kwargs or request data, pass said info to some function or model method, check the result, if success, return success response, if not, return error response. This pattern accounts for most views I write. My views are always as short as possible and contain almost no logic aside from what error to return on failure.
+		
+		
+		
+19  side track .. learning mistakes  ::: https://www.toptal.com/django/django-top-10-mistakes
+		
+20 pillow overidding model to save images with reduced size 
+
+21 exploring  django-adminlte-3
+
+22  editing django admin py  :: 
+	docs.djangoproject.com/en/3.1/ref/contrib/admin/actions/
+	
+23 login to app !  session based  
+		from django.contrib.auth import views as auth_views >> use this  
+		path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+		just define how you want the login front end page  and voila yu are authenticated  
+		
+24 	managers  in models : 
+		the idea of fatty models and keeping view clean 
+		start with new viiew for profile accessable from admin only  .. great ! 
+		now create a new manager in profile  ... showing only certain model 
+		
+		Adding username  as finl which is nested 
+		username = serializers.CharField(read_only=True, source="user.username")
+		
+25  understanding query set  :: 
+	https://docs.djangoproject.com/en/3.1/ref/models/querysets/
+	
+	get full views  
+	# This list contains a Blog object.
+	>>> Blog.objects.filter(name__startswith='Beatles')
+	<QuerySet [<Blog: Beatles Blog>]>
+
+	# This list contains a dictionary.
+	>>> Blog.objects.filter(name__startswith='Beatles').values()
+	<QuerySet [{'id': 1, 'name': 'Beatles Blog', 'tagline': 'All the latest Beatles news.'}]>
+		
+	bulk create  
+	Entry.objects.bulk_create([
+	...     Entry(headline='This is a test'),
+	...     Entry(headline='This is only a test'),
+	... ])
+	
+	union 
+	qs1 = Author.objects.values_list('name')
+	qs2 = Entry.objects.values_list('headline')
+	qs1.union(qs2).order_by('name')
+	
+	
+	ovrrridding our objects.all() 
+	def get_queryset(self):
+	result_list = super().get_queryset()
+	new_data = result_list.filter(user__username__contains="su")
+	return new_data
+	
+	
+	USER MODEL 
+	https://docs.djangoproject.com/en/3.1/ref/contrib/auth/
+		
+		
+26 Performing raw SQL queries
+	for p in Person.objects.raw('SELECT * FROM myapp_person'):
+	...     print(p)
+	
+27 flush all datta 
+	python manage.py flush 
+	
+28 setting new app and making all model and serialisers  
+	bank    
+		accessing user from the request 
+		
+	credit card 
+		simialr to bank but has a limit field which has be made zero every time 
+
+	cate,sub ,acccate , account_sub 
+	added signal to auto add 
+	added admin page for pre existing users
+
+29 	adding the expense trigers signal to chenge bank data  
+
+30 add  all the models 
+
+	
+
+	
