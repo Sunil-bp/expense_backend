@@ -11,10 +11,9 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileList(serializers.ModelSerializer):
     username = serializers.CharField(read_only=True, source="user.username")
-
     class Meta:
         model = Profile
-        fields = ['username','place']
+        fields = ['username','place','photo']
         # fields = ['username']
 
 class ChangePasswordSerializer(serializers.Serializer):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from expense.models import Bank, CreditCard
-
+from expense.models import Bank, CreditCard, Subcategory, Category, AccountCategory, AccountSubcategory, ExpenseRecord, \
+    ExpenseTransfer, CreditCardRecord
 from rest_framework.serializers import (
 EmailField,
 CharField,
@@ -38,3 +38,37 @@ class CreditCardSerializer(serializers.ModelSerializer):
         exclude = ["user"]
 
 
+class SubcategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Subcategory
+        fields = "__all__"
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model =Category
+        fields = "__all__"
+
+
+
+class AccountCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model =AccountCategory
+        fields = "__all__"
+
+
+class AccountSubcategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model =AccountSubcategory
+        fields = "__all__"
+
+class ExpenseRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =ExpenseRecord
+        fields = "__all__"
+
+
+class ExpenseTransferSerializer(serializers.ModelSerializer):
+    class Meta:
+        model =ExpenseTransfer
+        fields = "__all__"

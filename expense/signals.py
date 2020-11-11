@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from users.models import Profile
 from django.dispatch import receiver
 from expense.models import Subcategory, Category \
-    , AccountCategory, AccountSubcategory, Bank, CreditCard, ExpenseRecord, ExpenseTransfer
+    , AccountCategory, AccountSubcategory, Bank, CreditCard, ExpenseRecord, ExpenseTransfer, CreditCardRecord
 
 
 @receiver(post_save, sender=Profile)
@@ -41,14 +41,14 @@ def add_expense(sender, instance, **kwargs):
     ac = Bank.objects.get(user=instance.user, bank_name=instance.account.bank_name)
     if instance.pk:
         print(f"modifying old data  {instance} ")
-        ar = ExpenseRecord.objects.get(pk = instance.pk)
+        ar = ExpenseRecord.objects.get(pk=instance.pk)
         if instance.type == "income":
-            ac.balance += (instance.amount -ar.amount )
+            ac.balance += (instance.amount - ar.amount)
         else:
-            ac.balance -= ( instance.amount - ar.amount)
+            ac.balance -= (instance.amount - ar.amount)
     else:
         if instance.type == "income":
-            ac.balance +=  instance.amount
+            ac.balance += instance.amount
         else:
             ac.balance -= instance.amount
     ac.save()
@@ -56,7 +56,6 @@ def add_expense(sender, instance, **kwargs):
 
 @receiver(post_save, sender=ExpenseTransfer)
 def expense_transfer(sender, instance, **kwargs):
-
     ac = Bank.objects.get(user=instance.user, bank_name=instance.from_account.bank_name)
     ac.balance -= instance.amount
     ac.save()
@@ -78,3 +77,19 @@ def expense_deleted(sender, instance, **kwargs):
     else:
         ac.balance += instance.amount
     ac.save()
+
+
+@receiver(pre_save, sender=CreditCardRecord)
+def add_creditexpense(sender, instance, **kwargs):
+    print(f"signal for credit record  {instance}")
+    ac = CreditCard.objects.get(user=instance.user, credit_name=instance.account.credit_name)
+    if instance.pk:
+        print(f"modifying old data  {instance} ")
+        ar = CreditCardRecord.objects.get(pk = instance.pk)
+        if instance.type == "expense":
+            ac.balance -= (instance.amount -ar.amount )
+            ac.save()
+    else:
+        if instance.type == "expense":
+            ac.balance -=  instance.amount
+            ac.save()

@@ -32,6 +32,11 @@ class ProfileManager(models.Manager):
         result_list = self.filter(user__username__contains="te")
         return result_list
 
+    def images(self,user_name):
+        print(f" in method to get image url for {user_name}")
+        result_list = self.get( user__pk = user_name.pk)
+        return result_list.photo.url
+
 
 
 
@@ -58,4 +63,6 @@ class Profile(models.Model):
         foo = Image.open(img_path)
         foo = foo.resize((160, 300), Image.ANTIALIAS)
         foo.save(img_path, quality=95)
+
+
 

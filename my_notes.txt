@@ -191,6 +191,8 @@
 
 29 	adding the expense trigers signal to chenge bank data  
 
+30 add  all the models 
+
 	
 
 	

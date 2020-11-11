@@ -1,5 +1,6 @@
 from django.contrib import admin
-from expense.models import Bank, CreditCard, Subcategory, Category, AccountCategory, AccountSubcategory, ExpenseRecord,ExpenseTransfer
+from expense.models import Bank, CreditCard, Subcategory, Category, AccountCategory, AccountSubcategory, ExpenseRecord, \
+    ExpenseTransfer, CreditCardRecord
 
 
 class BankAdmin(admin.ModelAdmin):
@@ -21,11 +22,20 @@ class SubcategoryAdmin(admin.ModelAdmin):
 class AccountCategoryAdmin(admin.ModelAdmin):
     list_display = ['user', 'category']
 
+
 class ExpenseRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'account','type','amount','category','sub_category']
+    list_display = ['user', 'account', 'type', 'amount', 'category', 'sub_category']
+
 
 class ExpenseTransferAdmin(admin.ModelAdmin):
-    list_display = ['user', 'create_on','amount','from_account','to_account']
+    list_display = ['user', 'create_on', 'amount', 'from_account', 'to_account']
+
+
+class CreditCardRecordAdmin(admin.ModelAdmin):
+    list_display = ['user', 'account','amount', 'create_on', 'type',
+                    'category', 'sub_category',
+                    'payed','emi_remaining','balance_remaning'
+                   ]
 
 
 admin.site.register(Bank, BankAdmin)
@@ -34,6 +44,6 @@ admin.site.register(Subcategory, SubcategoryAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(AccountCategory, AccountCategoryAdmin)
 admin.site.register(AccountSubcategory)
-admin.site.register(ExpenseRecord,ExpenseRecordAdmin)
-admin.site.register(ExpenseTransfer,ExpenseTransferAdmin)
-
+admin.site.register(ExpenseRecord, ExpenseRecordAdmin)
+admin.site.register(ExpenseTransfer, ExpenseTransferAdmin)
+admin.site.register(CreditCardRecord, CreditCardRecordAdmin)
