@@ -49,16 +49,16 @@ class Bank(models.Model):
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
     # ok so save.super  but check for first time
-    def save(self, *args, **kwargs):
-        if self.id == None:
-            old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
-            if old_data>0:
-                print(f"Already data exists  {old_data}")
-                # raise IntegrityError
-                return "data already there "
-
-        # self.bank_name += "-" + self.user.username
-        super().save(*args, **kwargs)  # Call the "real" save() method.
+    # def save(self, *args, **kwargs):
+    #     if self.id == None:
+    #         old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
+    #         if old_data>0:
+    #             print(f"Already data exists  {old_data}")
+    #             # raise IntegrityError
+    #             return "data already there "
+    #
+    #     # self.bank_name += "-" + self.user.username
+    #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
 
 class CreditCard(models.Model):
@@ -141,6 +141,15 @@ class ExpenseTransfer(models.Model):
         return f'{self.user} :  {self.amount} :   {self.from_account}  {self.to_account}'
 
 
+
+class CreditCardRecordManager(models.Manager):
+    def add_record(self,data):
+        print("custom model to add user  credit card expense  ")
+        print(f"self is  {self}")
+        print(f"data is  {data}")
+
+
+
 class CreditCardRecord(models.Model):
     record_type = [
         ("payment", "payment"), ("expense", "expense"),
@@ -160,49 +169,51 @@ class CreditCardRecord(models.Model):
     def __str__(self):
         return f'{self.account}  : {self.amount} :  {self.note}'
 
-    ##first time model save  ,,, amount  = balance_remoening
-    def save(self, *args, **kwargs):
-        if self.pk == None:
-            if self.type =="expense":
-                #the data is added for the first time
-                self.balance_remaning = self.amount
-                if self.emi_total > 0 :
-                    self.balance_remaning = self.amount / self.emi_total
-            else:
-                distribute_amount  = self.amount
-                #makiing a payment
-                all_unpaid = CreditCardRecord.objects.filter(user=self.user,account=self.account,type="expense", payed=False).order_by('create_on')
-                for record in all_unpaid:
-                    print(f"Data is {record}")
-                    #check if emi is due for this month
-                    d1  = datetime.datetime.now()
-                    d2  = record.create_on
-                    print(d1,d2,d1.month,d2.month)
-                    mon = (d1.year - d2.year) * 12 + d1.month - d2.month
-                    print(f" months diff  {mon}" )
 
-                    # if record.emi_remaining > 0:
-                    #     ##the amount payable is not amount but amount/ total emi
-                    #     payabe  = record.amount / record.emi_total
-                    # else :
-                    #     payabe = record.amount
-                    if record.balance_remaning > distribute_amount:
-                        print("balance is greter than amont being paid ")
-                        record.balance_remaning -= distribute_amount
-                        print(record.balance_remaning)
-                        record.save()
-                        break
-                    else:
-                        distribute_amount  -= record.balance_remaning
-                        if record.emi_remaining <= 1:
-                            print("emi conpleted  ")
-                            record.balance_remaning = 0
-                            record.emi_remaining  = 0
-                            record.payed = True
-                        else:
-                            print("emi remians ")
-                            record.balance_remaning = record.amount / record.emi_total
-                            record.emi_remaining -= 1
-                    record.save()
-            self.payed = True
-        super().save(*args, **kwargs)  # Call the "real" save() method.
+    objects  = CreditCardRecordManager()
+    ##first time model save  ,,, amount  = balance_remoening
+    # def save(self, *args, **kwargs):
+    #     if self.pk == None:
+    #         if self.type =="expense":
+    #             #the data is added for the first time
+    #             self.balance_remaning = self.amount
+    #             if self.emi_total > 0 :
+    #                 self.balance_remaning = self.amount / self.emi_total
+    #         else:
+    #             distribute_amount  = self.amount
+    #             #makiing a payment
+    #             all_unpaid = CreditCardRecord.objects.filter(user=self.user,account=self.account,type="expense", payed=False).order_by('create_on')
+    #             for record in all_unpaid:
+    #                 print(f"Data is {record}")
+    #                 #check if emi is due for this month
+    #                 d1  = datetime.datetime.now()
+    #                 d2  = record.create_on
+    #                 print(d1,d2,d1.month,d2.month)
+    #                 mon = (d1.year - d2.year) * 12 + d1.month - d2.month
+    #                 print(f" months diff  {mon}" )
+    #
+    #                 # if record.emi_remaining > 0:
+    #                 #     ##the amount payable is not amount but amount/ total emi
+    #                 #     payabe  = record.amount / record.emi_total
+    #                 # else :
+    #                 #     payabe = record.amount
+    #                 if record.balance_remaning > distribute_amount:
+    #                     print("balance is greter than amont being paid ")
+    #                     record.balance_remaning -= distribute_amount
+    #                     print(record.balance_remaning)
+    #                     record.save()
+    #                     break
+    #                 else:
+    #                     distribute_amount  -= record.balance_remaning
+    #                     if record.emi_remaining <= 1:
+    #                         print("emi conpleted  ")
+    #                         record.balance_remaning = 0
+    #                         record.emi_remaining  = 0
+    #                         record.payed = True
+    #                     else:
+    #                         print("emi remians ")
+    #                         record.balance_remaning = record.amount / record.emi_total
+    #                         record.emi_remaining -= 1
+    #                 record.save()
+    #         self.payed = True
+    #     super().save(*args, **kwargs)  # Call the "real" save() method.

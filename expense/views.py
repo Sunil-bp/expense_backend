@@ -6,6 +6,10 @@ from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 
     )
+
+from rest_framework.response import Response
+from rest_framework import status
+
 from expense.serializers import BankSerializer, CreditCardSerializer
 from django.contrib.auth.models import User
 from users.models import  Profile
@@ -24,11 +28,34 @@ from django_filters.rest_framework import DjangoFilterBackend
 
 
 class BankList(generics.ListCreateAPIView):
+
+    # def __init__(self):
+    #     print("hello \n\n")
+    #     return Response("gd", status=status.HTTP_400_BAD_REQUEST)
+
     def get_queryset(self):
         return Bank.objects.filter(user=self.request.user)
-    queryset = Bank.objects.all()
+    # queryset = Bank.objects.all()
     serializer_class = BankSerializer
     permission_classes = [IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        print(f"data is now {type(request.data)}")
+        print(f"custom method to create {(self)} , {request}, {args}, {kwargs}")
+        serializer = BankSerializer(data=request.data)
+        print(f" serialised data  {serializer}")
+        if serializer.is_valid():
+            # serializer.save()
+            print(serializer.data)
+            bank = Bank.objects.filter(user=request.user,bank_name = serializer['bank_name'].value)
+            if bank.count()>0:
+                print("Data already there ")
+                return Response({"message":"data already there  "}, status=status.HTTP_208_ALREADY_REPORTED)
+            else:
+                bank = Bank(user=request.user, bank_name=serializer['bank_name'].value,balance= serializer['balance'].value)
+                bank.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class BankDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
