@@ -4,6 +4,7 @@ from users.models import Profile
 from django.utils import timezone
 import datetime
 from django.db import IntegrityError
+from dateutil.relativedelta import relativedelta
 
 # Create your models here.
 
@@ -69,6 +70,7 @@ class CreditCard(models.Model):
     due = models.IntegerField(null=False, blank=False)
     create_on = models.DateField(default=datetime.date.today)
     billing_date = models.DateField(null=False, blank=False)
+    eccess = models.IntegerField(null=False, blank=False,default=0)
 
     def __str__(self):
         return f'{self.user.username} name : {self.credit_name} : balance {self.balance}'
@@ -143,10 +145,140 @@ class ExpenseTransfer(models.Model):
 
 
 class CreditCardRecordManager(models.Manager):
-    def add_record(self,data):
+
+    def add_record(self,user,account,created_on,type,amount,category,sub_category,\
+                   note,emi_total,balance_remaning):
         print("custom model to add user  credit card expense  ")
         print(f"self is  {self}")
-        print(f"data is  {data}")
+        ac = CreditCard.objects.get(pk = account)
+        ac.balance -= amount
+        ac.save()
+        account = CreditCard.objects.get(pk = account)
+        category = Category.objects.get(pk = category)
+        sub_category = Subcategory.objects.get(pk = sub_category)
+
+
+        if emi_total and emi_total > 1:
+            print("Emi is enabled for this record  ")
+            if not created_on:
+                set_month = datetime.datetime.now()
+            else:
+                set_month = created_on
+            for each_emi in range(emi_total):
+                month = set_month + relativedelta(months=each_emi)
+                print(f"Crating emi for month {each_emi+1} and date  {month}")
+                new_note = note + " : EMI  "+ str(emi_total) +"/"+str((each_emi+1))
+                self.create(user=user,
+                            account=account,
+                            type=type,
+                            created_on=month,
+                            amount=amount,
+                            category=category,
+                            sub_category=sub_category,
+                            note=new_note,
+                            emi_total=0,
+                            balance_remaning=amount/emi_total)
+            print("saving final data  ")
+            self.create(user=user,
+                        account=account,
+                        type=type,
+                        created_on=set_month,
+                        amount=amount,
+                        category=category,
+                        sub_category=sub_category,
+                        note=note,
+                        payed=True,
+                        emi_total=emi_total,
+                        balance_remaning=0)
+        else:
+            print("no emi on this one ")
+            if not created_on:
+                self.create(user=user,
+                            account=account,
+                            type=type,
+                            amount=amount,
+                            category=category,
+                            sub_category=sub_category,
+                            note=note,
+                            emi_total=0,
+                            balance_remaning=amount)
+            else:
+                self.create(user=user,
+                            account=account,
+                            created_on=created_on,
+                            type=type,
+                            amount=amount,
+                            category=category,
+                            sub_category=sub_category,
+                            note=note,
+                            emi_total=0,
+                            balance_remaning=amount)
+
+    def add_payment(self,user,account,created_on,type,amount,category,sub_category,\
+                   note,emi_total,balance_remaning):
+        print("custom model to add user  credit card payment  ")
+        print(f"self is  {self}")
+        ac = CreditCard.objects.get(pk = account)
+        if ac.eccess > 0:
+            print("SOme money from last payment stored in bank ")
+            amount += ac.eccess
+        total_amonut  = amount
+
+        if ac.due > 0 :
+
+            print("paying old due ")
+            if ac.due > amount:
+                ac.due -= amount
+            else:
+                amount -= ac.due
+                ac.due = 0
+        print("Adding amout into balance  ")
+        ac.balance += amount
+        billing_date = ac.billing_date
+        ac.save()
+        account = CreditCard.objects.get(pk = account)
+        category = Category.objects.get(pk = category)
+        sub_category = Subcategory.objects.get(pk = sub_category)
+        print(f"billing date  is {billing_date}")
+        today = datetime.datetime.today()
+        current_billing_date = datetime.datetime(today.year,today.month-1,billing_date.day)
+        print(f"Currnt billing date is  {current_billing_date}")
+        #get all payments  noot payed
+        old_data  = CreditCardRecord.objects.filter(user=user,
+                                                    account=account,
+                                                    type="expense",
+                                                    payed=False,
+                                                    created_on__lte=current_billing_date).order_by('created_on')
+        print(f"number of records  {old_data.count()}")
+        for data in old_data:
+            print(f"Paying for data {data}")
+            if data.balance_remaning > total_amonut:
+                data.balance_remaning -= total_amonut
+                data.save()
+                break
+            else:
+                total_amonut -= data.balance_remaning
+                data.balance_remaning = 0
+                data.payed = True
+                data.save()
+        if balance_remaning >0 :
+            print('payed more than the required  storng to access')
+            ac = CreditCard.objects.get(pk=account)
+            ac.eccess = balance_remaning
+            ac.save()
+        print("saving payment data  ")
+        self.create(user=user,
+                    account=account,
+                    type="payment",
+                    amount=amount,
+                    category=category,
+                    sub_category=sub_category,
+                    note=note,
+                    payed= True,
+                    emi_total=0,
+                    balance_remaning=0)
+
+
 
 
 
@@ -156,14 +288,14 @@ class CreditCardRecord(models.Model):
     ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     account =  models.ForeignKey(CreditCard, on_delete=models.SET_NULL,null=True)
-    create_on = models.DateTimeField(default=timezone.now)
+    created_on = models.DateTimeField(default=timezone.now)
     type = models.CharField(max_length=7, choices=record_type)
     amount = models.IntegerField(null=False, blank=False)
+
     category = models.ForeignKey(Category, on_delete=models.SET_NULL,null=True)
     sub_category = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True)
     note = models.CharField(max_length=30, null=False, blank=False)
     payed = models.BooleanField(default=False)
-    emi_remaining  =  models.IntegerField(null=False, blank=False,default=0)
     emi_total  =  models.IntegerField(null=False, blank=False,default=0)
     balance_remaning = models.IntegerField(default=0)
     def __str__(self):
@@ -171,7 +303,7 @@ class CreditCardRecord(models.Model):
 
 
     objects  = CreditCardRecordManager()
-    ##first time model save  ,,, amount  = balance_remoening
+    ##first time m  odel save  ,,, amount  = balance_remoening
     # def save(self, *args, **kwargs):
     #     if self.pk == None:
     #         if self.type =="expense":
@@ -217,3 +349,4 @@ class CreditCardRecord(models.Model):
     #                 record.save()
     #         self.payed = True
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
+

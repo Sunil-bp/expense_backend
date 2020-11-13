@@ -72,3 +72,13 @@ class ExpenseTransferSerializer(serializers.ModelSerializer):
     class Meta:
         model =ExpenseTransfer
         fields = "__all__"
+
+class CreditCardRecordSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(read_only=True, source="user.username")
+
+    class Meta:
+        model =CreditCardRecord
+        exclude = ["user"]
+
+
+

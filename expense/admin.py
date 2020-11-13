@@ -32,9 +32,9 @@ class ExpenseTransferAdmin(admin.ModelAdmin):
 
 
 class CreditCardRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'account','amount', 'create_on', 'type',
+    list_display = ['user', 'account','amount', 'created_on', 'type',
                     'category', 'sub_category',
-                    'payed','emi_remaining','balance_remaning'
+                    'payed','balance_remaning'
                    ]
 
 

@@ -15,4 +15,7 @@ urlpatterns = [
     path('user-image/', views.ProfileImage.as_view(), name='expense-tracker-user-image'),
     path('expense/', views.ExpenseList.as_view(), name='expense-tracker-list'),
     path('expense/<int:pk>/', views.ExpenseDetail.as_view(), name='expense-tracker-detail'),
+    path('creditrecord/', views.CreditCardExpenseList.as_view(), name='CreditCardRecord-list'),
+    path('creditrecord/<int:pk>/', views.CreditCardExpenseDetail.as_view(), name='CreditCardRecord-details'),
+
 ]
