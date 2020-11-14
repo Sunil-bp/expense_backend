@@ -13,7 +13,7 @@ from rest_framework.permissions import (
 from django.http import HttpResponse
 
 from django.contrib.auth.models import User
-from users.serializers import UserSerializer, ChangePasswordSerializer , ProfileList
+from users.serializers import UserSerializer, ChangePasswordSerializer, ProfileList
 
 ##auth jwt
 from rest_framework.response import Response
@@ -23,8 +23,9 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FO
 from rest_framework import mixins
 from rest_framework import generics
 
-#send email
+# send email
 from django.core.mail import send_mail
+
 
 ## Can be uswed to list users  ( but can be harmfull to list all users  )
 ## Since this mixes list an create  .. go one step back
@@ -44,9 +45,6 @@ class Usercreate(generics.CreateAPIView):
 
 
 class ChangePasswordView(generics.UpdateAPIView):
-    """
-    An endpoint for changing password.
-    """
     serializer_class = ChangePasswordSerializer
     model = User
     permission_classes = (IsAuthenticated,)
@@ -76,6 +74,7 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response(response)
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
+
 ## Broken down as this
 
 # class Usercreate(mixins.CreateModelMixin,
@@ -90,7 +89,7 @@ class ChangePasswordView(generics.UpdateAPIView):
 def sending_mail(request):
     print("Sending mail ")
 
-    #testing manager
+    # testing manager
     print()
 
     send_mail(
@@ -102,9 +101,25 @@ def sending_mail(request):
     )
     return HttpResponse("HI sunil ")
 
-
-
-class Profilelist(generics.ListAPIView):
+# not needed  we do have the admin page for this
+class AdminProfilelist(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileList
     permission_classes = [IsAdminUser]
+
+
+class Profilelist(generics.ListAPIView):
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
+
+    serializer_class = ProfileList
+    permission_classes = [IsAuthenticated]
+
+class ProfileUpdate(generics.RetrieveUpdateAPIView):
+    def get_queryset(self):
+        user = self.request.user
+        return Profile.objects.filter(user=user)
+
+    serializer_class = ProfileList
+    permission_classes = [IsAuthenticated]

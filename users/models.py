@@ -9,9 +9,14 @@ from PIL import Image
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
-
-    email_plaintext_message = "{}?token={}".format(reverse('password_reset:reset-password-request'), reset_password_token.key)
-
+    print(f"Password reset for user  {reset_password_token.user}")
+    email_plaintext_message = "Hi {}, \n" \
+                              "A password reset request was requested.\n" \
+                              "Please copy the token at our password reset page \n\n" \
+                              "token={}\n\n" \
+                              "Regards, \n" \
+                              "Expense.vue Team ".format(reset_password_token.user, reset_password_token.key)
+    print(f"Emial being sent is  \n {email_plaintext_message}")
     send_mail(
         # title:
         "Password Reset for {title}".format(title="Expense vue "),
@@ -33,7 +38,7 @@ class ProfileManager(models.Manager):
         return result_list
 
     def get_images(self,user_name):
-        print(f" in method to get image url for {user_name}")
+        print(f" In method to get image url for {user_name}")
         result_list = self.get( user__pk = user_name.pk)
         print(result_list.photo.url)
         return [result_list]
@@ -47,15 +52,14 @@ class Profile(models.Model):
         verbose_name="User name",
     )
 
-    avialble = models.BooleanField(default = False)
+    available = models.BooleanField(default = False)
     photo = models.ImageField(upload_to='profile_pics/',default  = "profile_pics/user_default.png")
-    place = models.CharField(max_length=30,default="karnataka")
-
     objects = ProfileManager()
 
     def __str__(self):
         return self.user.username
 
+    #Reducing picture quality to reduce load on server
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # Call the "real" save() method.
         img_path = self.photo.path
