@@ -290,6 +290,8 @@ class CreditCardRecord(models.Model):
     #     return f'{self.account}  : {self.amount} :  {self.note}'
 
 
+
+
     objects  = CreditCardRecordManager()
     ##first time m  odel save  ,,, amount  = balance_remoening
     # def save(self, *args, **kwargs):
