@@ -11,29 +11,19 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from expense.serializers import BankSerializer, CreditCardSerializer, CreditCardRecordSerializer
-from django.contrib.auth.models import User
-from users.models import Profile
 from expense.models import Subcategory, Category, Bank, CreditCard, \
     AccountCategory, AccountSubcategory, ExpenseRecord, ExpenseTransfer, CreditCardRecord
-from django.contrib.auth.models import User
 from users.models import Profile
 from users.serializers import ProfileList
 from expense.serializers import SubcategorySerializer, CategorySerializer, \
     AccountCategorySerializer, AccountSubcategorySerializer, \
     ExpenseRecordSerializer, ExpenseTransferSerializer, CreditCardRecordSerializer
-from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 class BankList(generics.ListCreateAPIView):
-
-    ##Testing if i can have an instance
-    # def __init__(self):
-    #     print("hello \n\n")
-    #     return Response("gd", status=status.HTTP_400_BAD_REQUEST)
-
     def get_queryset(self):
         return Bank.objects.filter(user=self.request.user)
 
@@ -246,9 +236,7 @@ class CreditCardExpenseList(generics.ListCreateAPIView):
         serializer: CreditCardRecordSerializer = CreditCardRecordSerializer(data=request.data)
         if serializer.is_valid():
             if serializer['type'].value == 'expense':
-                print(f' Adding an expesne ')
                 ac = CreditCard.objects.get(pk=serializer['account'].value)
-                print(f"Amount dat {ac.balance}, {serializer['amount'].value}")
                 if ac.balance < serializer['amount'].value:
                     return Response({"message": "balance is less "}, status=status.HTTP_204_NO_CONTENT)
                 CC = CreditCardRecord.objects.add_record(user=request.user,
@@ -263,7 +251,6 @@ class CreditCardExpenseList(generics.ListCreateAPIView):
                                                          balance_remaning=serializer['account'].value
                                                          )
             else:
-                print(f"Adding an payment")
                 CC = CreditCardRecord.objects.add_payment(user=request.user,
                                                           account=serializer['account'].value,
                                                           type="payment",

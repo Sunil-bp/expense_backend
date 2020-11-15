@@ -7,8 +7,8 @@ class BankSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bank
         fields = ['bank_name', 'pk', 'balance']
-        # exclude = ["user"]
 
+    #only place where serialiser is overriden by a model
     def create(self, validated_data):
         validated_data["user"] = self.context['request'].user
         return Bank.objects.create(**validated_data)
