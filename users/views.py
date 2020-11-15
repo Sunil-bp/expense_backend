@@ -27,14 +27,15 @@ from rest_framework import generics
 from django.core.mail import send_mail
 
 
-## Can be uswed to list users  ( but can be harmfull to list all users  )
-## Since this mixes list an create  .. go one step back
+## Can be used to list users  ( but can be harmfull to list all users  )
+## Since this mixes list and create  .. go one step back
 
 class Usercreate(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [AllowAny]
 
+    # Tried to prevent get method
     # def _allowed_methods(self):
     #     return [ 'POST', 'HEAD', 'OPTIONS']
     #

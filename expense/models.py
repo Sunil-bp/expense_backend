@@ -1,12 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from users.models import Profile
 from django.utils import timezone
 import datetime
-from django.db import IntegrityError
 from dateutil.relativedelta import relativedelta
 
-# Create your models here.
 
 class BankManager(models.Manager):
     def with_counts(self):
@@ -19,15 +16,10 @@ class BankManager(models.Manager):
 
 
 class Bank(models.Model):
-    # typegiven = [
-    #     ("bank", "bank"), ("credit", "credit"),
-    # ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     bank_name = models.CharField(max_length=30, null=False, blank=False)
     balance = models.IntegerField(null=False, blank=False)
     create_on = models.DateField(default=datetime.date.today)
-    # type = models.CharField(max_length=9, choices=typegiven,default="bank")
-
     # objects = BankManager()
 
     def __str__(self):
@@ -38,7 +30,7 @@ class Bank(models.Model):
     #     self.bank_name += "-" + self.user.username
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
-    ## problem with two sbi account
+    ## problem with two sbi account for same user
     ##o this has to be done in view or the model set as unique
     # def save(self, *args, **kwargs):
     #     old_data = Bank.objects.filter(user= self.user,bank_name =self.bank_name ).count()
@@ -61,6 +53,7 @@ class Bank(models.Model):
     #     # self.bank_name += "-" + self.user.username
     #     super().save(*args, **kwargs)  # Call the "real" save() method.
 
+    # executed this logic in views so that we can have a response  back to user
 
 class CreditCard(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -70,7 +63,7 @@ class CreditCard(models.Model):
     due = models.IntegerField(null=False, blank=False)
     create_on = models.DateField(default=datetime.date.today)
     billing_date = models.DateField(null=False, blank=False)
-    eccess = models.IntegerField(null=False, blank=False,default=0)
+    excess = models.IntegerField(null=False, blank=False, default=0)
 
     def __str__(self):
         return f'{self.user.username} name : {self.credit_name} : balance {self.balance}'
@@ -102,8 +95,8 @@ class AccountCategory(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return f'{self.user}   {self.category} '
+    # def __str__(self):
+    #     return f'{self.user}   {self.category} '
 
 
 class AccountSubcategory(models.Model):
@@ -127,8 +120,8 @@ class ExpenseRecord(models.Model):
     sub_category = models.ForeignKey(Subcategory, on_delete=models.SET_NULL, null=True)
     note = models.CharField(max_length=30, null=False, blank=False)
 
-    def __str__(self):
-        return f'{self.account}  : {self.amount} :  {self.note}'
+    # def __str__(self):
+    #     return f'{self.account}  : {self.amount} :  {self.note}'
 
 
 class ExpenseTransfer(models.Model):
@@ -139,8 +132,8 @@ class ExpenseTransfer(models.Model):
     to_account = models.ForeignKey(Bank, on_delete=models.SET_NULL,null=True,related_name='to_account')
     note = models.CharField(max_length=30, null=False, blank=False)
 
-    def __str__(self):
-        return f'{self.user} :  {self.amount} :   {self.from_account}  {self.to_account}'
+    # def __str__(self):
+    #     return f'{self.user} :  {self.amount} :   {self.from_account}  {self.to_account}'
 
 
 
@@ -216,57 +209,11 @@ class CreditCardRecordManager(models.Manager):
 
     def add_payment(self,user,account,created_on,type,amount,category,sub_category,\
                    note,emi_total,balance_remaning):
-        print("custom model to add user  credit card payment  ")
-        print(f"self is  {self}")
-        ac = CreditCard.objects.get(pk = account)
-        if ac.eccess > 0:
-            print("SOme money from last payment stored in bank ")
-            amount += ac.eccess
-        total_amonut  = amount
-
-        if ac.due > 0 :
-
-            print("paying old due ")
-            if ac.due > amount:
-                ac.due -= amount
-            else:
-                amount -= ac.due
-                ac.due = 0
-        print("Adding amout into balance  ")
-        ac.balance += amount
-        billing_date = ac.billing_date
-        ac.save()
-        account = CreditCard.objects.get(pk = account)
-        category = Category.objects.get(pk = category)
-        sub_category = Subcategory.objects.get(pk = sub_category)
-        print(f"billing date  is {billing_date}")
-        today = datetime.datetime.today()
-        current_billing_date = datetime.datetime(today.year,today.month-1,billing_date.day)
-        print(f"Currnt billing date is  {current_billing_date}")
-        #get all payments  noot payed
-        old_data  = CreditCardRecord.objects.filter(user=user,
-                                                    account=account,
-                                                    type="expense",
-                                                    payed=False,
-                                                    created_on__lte=current_billing_date).order_by('created_on')
-        print(f"number of records  {old_data.count()}")
-        for data in old_data:
-            print(f"Paying for data {data}")
-            if data.balance_remaning > total_amonut:
-                data.balance_remaning -= total_amonut
-                data.save()
-                break
-            else:
-                total_amonut -= data.balance_remaning
-                data.balance_remaning = 0
-                data.payed = True
-                data.save()
-        if balance_remaning >0 :
-            print('payed more than the required  storng to access')
-            ac = CreditCard.objects.get(pk=account)
-            ac.eccess = balance_remaning
-            ac.save()
-        print("saving payment data  ")
+        print("Custom model to add credit card payment  ")
+        account = CreditCard.objects.get(pk=account)
+        category = Category.objects.get(pk=category)
+        sub_category = Subcategory.objects.get(pk=sub_category)
+        print(f"Saving expense data for this payment  ")
         self.create(user=user,
                     account=account,
                     type="payment",
@@ -274,11 +221,52 @@ class CreditCardRecordManager(models.Manager):
                     category=category,
                     sub_category=sub_category,
                     note=note,
-                    payed= True,
+                    payed=True,
                     emi_total=0,
                     balance_remaning=0)
+        print(f"getting Credit card data ")
+        ac = CreditCard.objects.get(pk = account.pk)
+        payed  = 0
+        amount += ac.excess
+        print(f"Total amount to be used  {amount}")
+        billing_date = ac.billing_date
+        total_amonut  = amount
 
-
+        print(f"Billing date  is {billing_date}")
+        today = datetime.datetime.today()
+        current_billing_date = datetime.datetime(today.year,today.month-1,billing_date.day)
+        print(f"\nCurrent billing date is  {current_billing_date}\n")
+        #get all payments  noot payed
+        old_data  = CreditCardRecord.objects.filter(user=user,
+                                                    account=account,
+                                                    type="expense",
+                                                    payed=False,
+                                                    created_on__lte=current_billing_date).order_by('created_on')
+        print(f"Number of records  {old_data.count()}")
+        for data in old_data:
+            print(f"Paying for data {data}")
+            if data.balance_remaning > total_amonut:
+                print(f"Paying {total_amonut} to data {data.note} ")
+                data.balance_remaning -= total_amonut
+                total_amonut = 0
+                data.save()
+                break
+            else:
+                print(f"Paying {data.balance_remaning} to data {data.note}  and setting data as payed")
+                total_amonut -= data.balance_remaning
+                data.balance_remaning = 0
+                data.payed = True
+                data.save()
+        print(f"payed  is  : {payed}\n remaining amount  : {amount}")
+        payed = amount - total_amonut
+        ac.balance += payed
+        ac.excess =  0
+        if total_amonut >0 :
+            print('payed more than the required or no paymant to be made storing to access')
+            ac.excess = total_amonut
+        print(f"Account data is  {ac}")
+        ac.save()
+        print("saving payment data  ")
 
 
 
@@ -298,8 +286,8 @@ class CreditCardRecord(models.Model):
     payed = models.BooleanField(default=False)
     emi_total  =  models.IntegerField(null=False, blank=False,default=0)
     balance_remaning = models.IntegerField(default=0)
-    def __str__(self):
-        return f'{self.account}  : {self.amount} :  {self.note}'
+    # def __str__(self):
+    #     return f'{self.account}  : {self.amount} :  {self.note}'
 
 
     objects  = CreditCardRecordManager()

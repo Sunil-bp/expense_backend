@@ -8,7 +8,7 @@ class BankAdmin(admin.ModelAdmin):
 
 
 class CreditCardAdmin(admin.ModelAdmin):
-    list_display = ['user', 'credit_name', 'limit', 'billing_date', 'balance', 'due']
+    list_display = ['user', 'excess', 'credit_name', 'limit', 'billing_date', 'balance', 'due']
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -32,10 +32,10 @@ class ExpenseTransferAdmin(admin.ModelAdmin):
 
 
 class CreditCardRecordAdmin(admin.ModelAdmin):
-    list_display = ['user', 'account','amount', 'created_on', 'type',
+    list_display = ['user', 'account', 'amount', 'created_on', 'type',
                     'category', 'sub_category',
-                    'payed','balance_remaning'
-                   ]
+                    'payed', 'balance_remaning'
+                    ]
 
 
 admin.site.register(Bank, BankAdmin)

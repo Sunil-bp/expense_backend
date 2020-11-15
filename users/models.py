@@ -1,6 +1,5 @@
 from django.db import models
 from django.dispatch import receiver
-from django.urls import reverse
 from django_rest_passwordreset.signals import reset_password_token_created
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
@@ -18,17 +17,13 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
                               "Expense.vue Team ".format(reset_password_token.user, reset_password_token.key)
     print(f"Emial being sent is  \n {email_plaintext_message}")
     send_mail(
-        # title:
         "Password Reset for {title}".format(title="Expense vue "),
-        # message:
         email_plaintext_message,
-        # from:
         "expense.vue@gmail.com",
-        # to:
         [reset_password_token.user.email]
     )
 
-#new manger
+#new manger all test
 class ProfileManager(models.Manager):
     def with_counts(self):
         result_list = self.filter(user__username__contains="sunil")
@@ -38,9 +33,8 @@ class ProfileManager(models.Manager):
         return result_list
 
     def get_images(self,user_name):
-        print(f" In method to get image url for {user_name}")
+        print(f" In method to get image url for user {user_name}")
         result_list = self.get( user__pk = user_name.pk)
-        print(result_list.photo.url)
         return [result_list]
 
 

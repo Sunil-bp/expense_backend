@@ -105,7 +105,7 @@ def expense_deleted(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=CreditCardRecord)
 def modify_creditexpense(sender, instance, **kwargs):
-    print(f"signal for modifying  credit record  {instance}")
+    print(f"signal for modifying  credit record  {instance} , not ding anything here  chill ")
     #payment is modifying old data in manager so dont do anythinghere
 
     # ac = CreditCard.objects.get(user=instance.user, credit_name=instance.account.credit_name)

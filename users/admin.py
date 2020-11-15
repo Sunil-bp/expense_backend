@@ -7,14 +7,14 @@ from expense.models import Category, Subcategory, AccountSubcategory, AccountCat
 
 def add_default_cate(modeladmin, request, queryset):
     category_querry = Category.objects.filter(pre_add=True)
-
+    print("Adding defult categories to all user DB")
     for each_user in queryset:
-        print("Each user is  %s", each_user)
+        print("Each user is ", each_user)
         for category in category_querry:
             ac = AccountCategory.objects.get_or_create(user=each_user, category=category)
         sub_category_querry = Subcategory.objects.filter(pre_add=True)
         for sub_category in sub_category_querry:
-            sac = AccountSubcategory.get_or_create.create(user=each_user, subcategory=sub_category)
+            sac = AccountSubcategory.objects.get_or_create(user=each_user, subcategory=sub_category)
 
 
 add_default_cate.short_description = "Add all default categories "
