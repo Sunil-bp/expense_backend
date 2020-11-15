@@ -104,16 +104,19 @@ def expense_deleted(sender, instance, **kwargs):
 
 
 @receiver(pre_save, sender=CreditCardRecord)
-def add_creditexpense(sender, instance, **kwargs):
-    print(f"signal for credit record  {instance}")
-    ac = CreditCard.objects.get(user=instance.user, credit_name=instance.account.credit_name)
-    if instance.pk:
-        print(f"modifying old data  {instance} ")
-        ar = CreditCardRecord.objects.get(pk = instance.pk)
-        if instance.type == "expense":
-            ac.balance -= (instance.amount -ar.amount )
-            ac.save()
-    else:
-        if instance.type == "expense":
-            ac.balance -=  instance.amount
-            ac.save()
+def modify_creditexpense(sender, instance, **kwargs):
+    print(f"signal for modifying  credit record  {instance} , not doing anything here chill shifted logic to model ")
+    #payment is modifying old data in manager so dont do anythinghere
+
+    # ac = CreditCard.objects.get(user=instance.user, credit_name=instance.account.credit_name)
+    # if instance.pk:
+    #     print(f"modifying old data  {instance} ")
+    #     ar = CreditCardRecord.objects.get(pk = instance.pk)
+    #     if instance.type == "expense":
+    #         ac.balance -= (instance.amount -ar.amount )
+    #         ac.save()
+    #added to model manager
+    # else:
+    #     if instance.type == "expense":
+    #         ac.balance -=  instance.amount
+    #         ac.save()

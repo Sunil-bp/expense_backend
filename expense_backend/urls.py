@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('token-auth/', obtain_jwt_token),
     path('api-token-refresh/', refresh_jwt_token),
-    path("api/manage/", include('users.urls')),
+    path("api/auth/", include('users.urls')),
     path("api/", include('expense.urls')),
 
 ]

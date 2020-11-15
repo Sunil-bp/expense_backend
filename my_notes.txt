@@ -193,6 +193,23 @@
 
 30 add  all the models 
 
+31 bank restricted to one bank for each user  and returning appropriate  
+
+32 test all existing api : 	
+		flush all table  
+		
+		user : user create : 
+			username  , password  , email  : passowrd is readonly : no get request allowed  
+			works without an email :: so in front end ask user to provide email so that we can have a reset  
+			
+		
+		Profile : used to get data 
+			fields = ['username','email','photo','first_name','last_name','last_login']
+			
+		So a get reest to get all daa for that user  and a post  
+		a reset page and a confirm page  
+		
+33 
 	
 
 	
