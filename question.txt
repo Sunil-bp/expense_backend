@@ -47,4 +47,41 @@
 	he problem was that the post_save signal was getting called when the object was created as well as saved. I have no idea why so I added a workaround which now works
 
 10 if model data is not created  
-	
+	   1. how to cal a class  in init :: class BankList(generics.ListCreateAPIView):
+
+											def __init__(self):
+												print("hello \n\n")
+												return Response("gd", status=status.HTTP_400_BAD_REQUEST)
+		doesnt work 
+		
+		2. using create method   
+			works fine  !!
+
+
+11 . .pending task : 
+			deatil view for categories   done  
+			
+12 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			

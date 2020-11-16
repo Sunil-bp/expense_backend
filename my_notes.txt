@@ -209,7 +209,11 @@
 		So a get reest to get all daa for that user  and a post  
 		a reset page and a confirm page  
 		
-33 
+33  testing expense  : 
+	Bank : so you have the pk and name and balance 
+			Now editing this ban is easy 
+	credit card  : same  
 	
+	categories  : has id and name and all 
 
 	

@@ -129,9 +129,8 @@ class CreditCardRecordManager(models.Manager):
                 set_month = datetime.datetime.strptime(created_on,'%Y-%m-%dT%H:%M:%SZ')
             for each_emi in range(emi_total):
                 # print(type(set_month))
-                print(set_month)
                 month = set_month + relativedelta(months=each_emi)
-                print(f"Creating emi for month {each_emi + 1} and date  {month}")
+                print(f"Creating EMI for month {each_emi + 1} ")
                 new_note = note + " : EMI  " + str(emi_total) + "/" + str((each_emi + 1))
                 self.create(user=user,
                             account=account,
@@ -143,7 +142,6 @@ class CreditCardRecordManager(models.Manager):
                             note=new_note,
                             emi_total=0,
                             balance_remaning=amount / emi_total)
-            print("saving final data  ")
             self.create(user=user,
                         account=account,
                         type=type,
